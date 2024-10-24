@@ -1,0 +1,48 @@
+.masked-y {
+	--mask-height: 1rem;
+	--scrollbar-width: 0.5rem;
+
+	--mask-image-content: linear-gradient(
+		to bottom,
+		transparent,
+		black var(--mask-height),
+		black calc(100% - var(--mask-height)),
+		transparent
+	);
+	--mask-size-content: calc(100%) 100%;
+
+	--mask-image-scrollbar: linear-gradient(black, black);
+	/* --mask-size-scrollbar: var(--scrollbar-width) 100%; */
+
+	mask-image: var(--mask-image-content);
+	mask-size: var(--mask-size-content);
+	mask-position: 0 0;
+	mask-repeat: no-repeat, no-repeat;
+
+	padding-block: var(--mask-height);
+	margin-block: calc(-1 * var(--mask-height)) !important;
+}
+
+/* .masked-x {
+	--mask-width: 1rem;
+	--scrollbar-width: 0.5rem;
+
+	--mask-image-content: linear-gradient(
+		to right,
+		transparent,
+		black var(--mask-width),
+		black calc(100% - var(--mask-width)),
+		transparent
+	);
+	--mask-size-content: 100% calc(100%);
+
+	--mask-image-scrollbar: linear-gradient(black, black);
+
+	mask-image: var(--mask-image-content);
+	mask-size: var(--mask-size-content);
+	mask-position: 0 0;
+	mask-repeat: no-repeat, no-repeat;
+
+	padding-inline: var(--mask-width);
+	margin-inline: calc(-1 * var(--mask-width)) !important;
+} */

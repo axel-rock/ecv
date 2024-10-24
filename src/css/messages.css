@@ -1,0 +1,105 @@
+.messages {
+	gap: 0.5rem;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+.message {
+	max-width: min(85%, 65ch);
+	padding-inline: 0.66rem;
+	padding-block: 0.5rem;
+	text-wrap: pretty;
+	color: var(--grey-900);
+	position: relative;
+	scroll-snap-align: end;
+	scroll-margin-block-end: 5rem;
+
+	border-radius: 0.75rem;
+	/* transition: box-shadow var(--transition); */
+	/* box-shadow: var(--shadow-2); */
+
+	/* &:hover {
+		box-shadow: var(--shadow-2);
+	} */
+
+	&::before,
+	&::after {
+		bottom: -0.1rem;
+		content: '';
+		height: 1rem;
+		position: absolute;
+	}
+
+	&[data-from='user'] {
+		align-self: flex-end;
+		/* background: var(--grey-100); */
+		background: linear-gradient(#43cdf6, #0087fe);
+		color: #fff;
+		background-attachment: fixed;
+		background-position: 0 0;
+		background-size: 100% 100%;
+
+		&:before {
+			content: '';
+			position: absolute;
+			z-index: 0;
+			bottom: 0;
+			right: -0.5rem;
+			height: 1.25rem;
+			width: 1.25rem;
+			background: inherit;
+			background-attachment: fixed;
+			border-bottom-left-radius: 1.25rem;
+		}
+
+		&:after {
+			content: '';
+			position: absolute;
+			z-index: 1;
+			bottom: 0;
+			right: -0.625rem;
+			width: 0.625rem;
+			height: 1.25rem;
+			background: var(--grey-50);
+			border-bottom-left-radius: 0.625rem;
+		}
+	}
+
+	&[data-from='assistant'] {
+		/* Default iOS colors */
+		/* background: #e5e5ea; */
+		/* color: #000; */
+		background: var(--grey-100);
+		color: var(--grey-900);
+
+		&:before {
+			content: '';
+			position: absolute;
+			z-index: 0;
+			bottom: 0;
+			left: -0.45rem;
+			height: 1.25rem;
+			width: 1.25rem;
+			background: inherit;
+			border-bottom-right-radius: 1.25rem;
+			clip-path: polygon(0 0, 50% 0, 100% 50%, 100% 100%, 0 100%);
+		}
+		&:after {
+			content: '';
+			position: absolute;
+			z-index: 1;
+			bottom: 0;
+			left: -0.625rem;
+			width: 0.625rem;
+			height: 1.25rem;
+			background: var(--grey-50);
+			border-bottom-right-radius: 0.625rem;
+		}
+	}
+
+	&.no-background {
+		background: unset;
+		padding: 0;
+	}
+}

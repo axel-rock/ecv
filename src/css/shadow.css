@@ -1,0 +1,17 @@
+:root {
+	--shadow-2: 0px 0px 0px 1px color-mix(in oklab, var(--grey-950) 5%, transparent),
+		0px 4px 5px -3px color-mix(in oklab, var(--grey-950) 10%, transparent),
+		0px 6px 8px 0px color-mix(in oklab, var(--grey-950) 3%, transparent);
+	--shadow-1: 0px 1px 1px 1px color-mix(in oklab, var(--grey-950) 5%, transparent),
+		0px 0px 0px 1px color-mix(in oklab, var(--grey-950) 8%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--shadow-2: 0px 0px 0px 1px color-mix(in oklab, var(--grey-950) 5%, transparent),
+			0px 4px 5px -3px color-mix(in oklab, #000 100%, transparent),
+			0px 6px 8px 0px color-mix(in oklab, #000 30%, transparent);
+		--shadow-1: 0px 1px 1px 1px color-mix(in oklab, var(--grey-950) 5%, transparent) inset,
+			0px 0px 0px 1px color-mix(in oklab, var(--grey-950) 8%, transparent) inset;
+	}
+}

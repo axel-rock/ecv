@@ -1,0 +1,27 @@
+.success,
+.error,
+.warning {
+	/* border-radius: 1rem; */
+	padding: 1rem;
+	/* display: flex; */
+	align-items: center;
+	justify-content: center;
+}
+
+.success {
+	border: solid 1px var(--green);
+	background-color: color-mix(in oklab, var(--green) 25%, var(--grey-0));
+	color: color-mix(in oklab, var(--green) 66%, var(--grey-950));
+}
+
+.error {
+	border: solid 1px var(--red);
+	background-color: color-mix(in oklab, var(--red) 25%, var(--grey-0));
+	color: color-mix(in oklab, var(--red) 80%, var(--grey-950));
+}
+
+.warning {
+	border: solid 1px var(--yellow);
+	background-color: color-mix(in oklab, var(--yellow) 25%, var(--grey-0));
+	color: color-mix(in oklab, var(--yellow) 80%, var(--grey-950));
+}

@@ -1,0 +1,12 @@
+dialog {
+	background-color: var(--grey-0);
+	border-radius: 1rem;
+	border: none;
+	box-shadow: var(--shadow-2);
+	padding: 0;
+
+	&::backdrop {
+		background-color: var(--grey-200);
+		backdrop-filter: blur(4px);
+	}
+}
