@@ -1,14 +1,14 @@
 <a href="/intro">Intro</a>
 <a href="/monitoring">La veille</a>
 <a href="/ai-101">AI 101</a>
-<a href="/llm-101">*** ***</a>
+<a href="/llm-101">LLM 101</a>
 <p>Les IA pour les devs</p>
 <a href="/ai-102">Lead Dev et IA</a>
 <p>Entreprises, éthique & sécurité</p>
 
 <hr />
 
-<p>*** ***</p>
+<p>LLM 102</p>
 <p>Prompt engineering</p>
 <p>L'IA avec parcimonie</p>
 
@@ -20,6 +20,7 @@
 <p>Tools & Functions</p>
 <p>Reranking</p>
 <p>Reasoning</p>
+<p>Fine tuning</p>
 <p>Multimodal</p>
 <p>L'IA locale</p>
 <p>Images</p>

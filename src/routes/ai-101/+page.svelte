@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData } from '../1-ai-101/$types'
+	import type { PageData } from './$types'
 
 	export let data: PageData
 </script>
