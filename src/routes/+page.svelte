@@ -15,7 +15,7 @@
 <hr />
 
 <h2>Techniques avancées:</h2>
-<p>RAG</p>
+<a href="/rag">RAG</a>
 <p>Agents</p>
 <p>Tools & Functions</p>
 <p>Reranking</p>
