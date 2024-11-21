@@ -76,4 +76,8 @@ export const actions = {
 
 		await addVector(content)
 	},
+
+	search: async ({ request }) => {
+		//
+	},
 }
