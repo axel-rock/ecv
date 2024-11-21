@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { PageData } from './$types'
+	import Movie from './Movie.svelte'
 
-	let { data, form }: PageData = $props()
+	// @ts-expect-error
+	let { form }: PageData = $props()
 </script>
 
 <h1>Rag</h1>
@@ -29,6 +31,19 @@
 	<button type="submit">Add to database</button>
 </form>
 
-<h2>Step 3: Compare vector</h2>
+<h2>Step 3: Compare vector / Search</h2>
+
+<form action="?/query" method="POST">
+	<input type="search" name="needle" id="needle" placeholder="What are you looking for?" />
+	<button type="submit">Search</button>
+</form>
+
+{#if form?.search_result}
+	<div class="results">
+		{#each form.search_result as result}
+			<Movie {...result} />
+		{/each}
+	</div>
+{/if}
 
 <h2>Step 4: Generate prompt</h2>
