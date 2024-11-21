@@ -1,15 +1,44 @@
 import { PRIVATE_OPEN_AI_API_KEY, PRIVATE_PINECONE_API_KEY } from '$env/static/private'
 import type { PageServerLoad } from './$types'
-import movies from '../../movies.json'
+import _movies from '../../movies.json'
 import pThrottle from 'p-throttle'
 
 const host = 'https://ecv-1652e37.svc.aped-4627-b74a.pinecone.io'
+const default_vector = Array(1536).fill(0)
+const movies = _movies as any[]
 
 export const load = (async () => {
-	return {}
+	// const samples = await query('The ')
+	// console.log({ samples })
+	// return {
+	// 	samples,
+	// }
 }) satisfies PageServerLoad
 
-async function getEmbeddings(prompt: string) {
+async function query(needle?: string, params: Record<string, any> = {}) {
+	const vector = needle ? (await getEmbeddings([needle]))[0].embedding : default_vector
+
+	console.log(vector)
+
+	const req = await fetch(`${host}/query`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Api-Key': PRIVATE_PINECONE_API_KEY,
+			'X-Pinecone-API-Version': '2024-10',
+		},
+		body: JSON.stringify({
+			vector: default_vector,
+			...params,
+		}),
+	})
+
+	const { matches } = (await req.json()) as { matches: any[] }
+
+	return matches
+}
+
+async function getEmbeddings(input: string[]) {
 	const res = await fetch('https://api.openai.com/v1/embeddings', {
 		method: 'POST',
 		headers: {
@@ -18,7 +47,7 @@ async function getEmbeddings(prompt: string) {
 		},
 		body: JSON.stringify({
 			model: 'text-embedding-3-small',
-			input: prompt,
+			input: input,
 		}),
 	})
 
@@ -27,10 +56,39 @@ async function getEmbeddings(prompt: string) {
 	return data
 }
 
-async function addVector(content: any) {
-	if (typeof content !== 'string') content = JSON.stringify(content)
+function clearObject(object: Object) {
+	// 	Metadata payloads must be key-value pairs in a JSON object. Keys must be strings, and values can be one of the following data types:
 
-	const embeddings = await getEmbeddings(content)
+	// String
+	// Number (integer or floating point, gets converted to a 64 bit floating point)
+	// Booleans (true, false)
+	// List of strings
+	// Null metadata values are not supported. Instead of setting a key to hold a
+	// null value, we recommend you remove that key from the metadata payload.
+	return Object.entries(object).reduce((acc, [key, value]) => {
+		if (value === null) return acc
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				if (value.length === 0) return acc
+			} else {
+				if (Object.keys(value).length === 0) return acc
+			}
+		}
+
+		return { ...acc, [key]: value }
+	})
+}
+
+async function addVectors(content: any[]) {
+	const embeddings = await getEmbeddings(content.map((c) => JSON.stringify(c)))
+
+	const vectors = content.map((c, i) => {
+		return {
+			id: new Date().getTime().toString() + '-' + i,
+			values: embeddings[i].embedding,
+			metadata: clearObject(c),
+		}
+	})
 
 	const res = await fetch(`${host}/vectors/upsert`, {
 		method: 'POST',
@@ -40,15 +98,7 @@ async function addVector(content: any) {
 			'X-Pinecone-API-Version': '2024-10',
 		},
 		body: JSON.stringify({
-			vectors: [
-				{
-					id: new Date().getTime().toString(),
-					values: embeddings[0].embedding,
-					metadata: {
-						content,
-					},
-				},
-			],
+			vectors,
 		}),
 	})
 
@@ -65,7 +115,7 @@ async function addVector(content: any) {
 export const actions = {
 	create: async ({ request }) => {
 		const formData = await request.formData()
-		const embeddings = await getEmbeddings(formData.get('prompt') as string)
+		const embeddings = await getEmbeddings([formData.get('prompt') as string])
 
 		return {
 			embedding: embeddings[0].embedding,
@@ -76,17 +126,54 @@ export const actions = {
 		const formData = await request.formData()
 		const content = formData.get('content') as string
 
-		await addVector(content)
+		await addVectors([content])
 	},
 
 	importMovies: async () => {
-		await Promise.all((movies as any[]).map(throttledImport))
+		const chunk_size = 16
+		// Get chunks of movies
+		let chunks = Array.from({ length: Math.ceil(movies.length / chunk_size) }, (_, i) =>
+			movies.slice(i * chunk_size, i * chunk_size + chunk_size),
+		)
+
+		// temp: limit to first 10 chunks
+		// chunks = chunks.slice(0, 1)
+
+		await Promise.all(chunks.map(throttledImport))
+	},
+
+	clear: async () => {
+		const req = await fetch(`${host}/query`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Api-Key': PRIVATE_PINECONE_API_KEY,
+				'X-Pinecone-API-Version': '2024-10',
+			},
+			body: JSON.stringify({
+				vector: default_vector,
+				topK: 1000,
+			}),
+		})
+
+		const { matches } = (await req.json()) as { matches: any[] }
+
+		await fetch(`${host}/vectors/delete`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Api-Key': PRIVATE_PINECONE_API_KEY,
+				'X-Pinecone-API-Version': '2024-10',
+			},
+			body: JSON.stringify({
+				ids: matches.map(({ id }) => id),
+			}),
+		})
 	},
 }
 
-const throttle = pThrottle({ limit: 1000, interval: 1000 })
-const throttledImport = throttle(async (movie: any) => {
-	console.count('imported')
-	// console.log(movie.title)
-	return addVector(movie)
+const throttle = pThrottle({ limit: 1, interval: 100 })
+const throttledImport = throttle(async (movies: any[]) => {
+	console.log(movies.map((movie) => movie.title))
+	return addVectors(movies)
 })

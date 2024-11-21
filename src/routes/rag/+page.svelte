@@ -35,6 +35,10 @@
 	<button type="submit">Import all movies</button>
 </form>
 
+<form action="?/clear" method="POST">
+	<button type="submit">Clear database</button>
+</form>
+
 <h2>Step 3: Compare vector (Search)</h2>
 
 <form action="?/search" method="POST">
