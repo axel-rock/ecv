@@ -1,6 +1,8 @@
 import { PRIVATE_OPEN_AI_API_KEY, PRIVATE_PINECONE_API_KEY } from '$env/static/private'
 import type { PageServerLoad } from './$types'
 
+const host = 'https://ecv-1652e37.svc.aped-4627-b74a.pinecone.io'
+
 export const load = (async () => {
 	return {}
 }) satisfies PageServerLoad
@@ -19,7 +21,43 @@ async function getEmbeddings(prompt: string) {
 	})
 
 	const { data } = await res.json()
+
 	return data
+}
+
+async function addVector(content: any) {
+	if (typeof content !== 'string') content = JSON.stringify(content)
+
+	const embeddings = await getEmbeddings(content)
+
+	const res = await fetch(`${host}/vectors/upsert`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Api-Key': PRIVATE_PINECONE_API_KEY,
+			'X-Pinecone-API-Version': '2024-10',
+		},
+		body: JSON.stringify({
+			vectors: [
+				{
+					id: new Date().getTime().toString(),
+					values: embeddings[0].embedding,
+					metadata: {
+						content,
+					},
+				},
+			],
+		}),
+	})
+
+	if (res.status !== 200) {
+		console.error(res)
+		throw new Error(res.statusText)
+	}
+
+	const { data } = await res.json()
+
+	console.log(data)
 }
 
 export const actions = {
@@ -34,54 +72,8 @@ export const actions = {
 
 	store: async ({ request }) => {
 		const formData = await request.formData()
-		const host = 'https://ecv-1652e37.svc.aped-4627-b74a.pinecone.io'
 		const content = formData.get('content') as string
 
-		const embeddings = await getEmbeddings(content)
-
-		// console.log(embeddings[0].embedding)
-
-		console.log(
-			JSON.stringify({
-				vectors: [
-					{
-						// id: 'A',
-						values: embeddings[0].embedding.length,
-						metadata: {
-							content,
-						},
-					},
-				],
-			}),
-		)
-
-		const res = await fetch(`${host}/vectors/upsert`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-Pinecone-API-Key': PRIVATE_PINECONE_API_KEY,
-				'X-Pinecone-API-Version': '2024-07',
-			},
-			body: JSON.stringify({
-				vectors: [
-					{
-						id: Math.random().toString(),
-						values: embeddings[0].embedding,
-						metadata: {
-							content,
-						},
-					},
-				],
-			}),
-		})
-
-		if (res.status !== 200) {
-			console.error(res)
-			throw new Error(res.statusText)
-		}
-
-		const { data } = await res.json()
-
-		console.log(data)
+		await addVector(content)
 	},
 }
