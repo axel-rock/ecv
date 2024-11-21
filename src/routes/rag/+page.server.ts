@@ -1,5 +1,7 @@
 import { PRIVATE_OPEN_AI_API_KEY, PRIVATE_PINECONE_API_KEY } from '$env/static/private'
 import type { PageServerLoad } from './$types'
+import movies from '../../movies.json'
+import pThrottle from 'p-throttle'
 
 const host = 'https://ecv-1652e37.svc.aped-4627-b74a.pinecone.io'
 
@@ -76,4 +78,15 @@ export const actions = {
 
 		await addVector(content)
 	},
+
+	importMovies: async () => {
+		await Promise.all((movies as any[]).map(throttledImport))
+	},
 }
+
+const throttle = pThrottle({ limit: 1000, interval: 1000 })
+const throttledImport = throttle(async (movie: any) => {
+	console.count('imported')
+	// console.log(movie.title)
+	return addVector(movie)
+})

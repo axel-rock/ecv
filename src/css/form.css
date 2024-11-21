@@ -107,7 +107,7 @@ input.small::file-selector-button {
 	padding: 2px 0.375rem;
 }
 
-input[type='search'] {
+/* input[type='search'] {
 	background-image: url('/icons/search.svg');
 	background-size: 16px 16px;
 	background-position: 0.75rem center;
@@ -118,7 +118,7 @@ input[type='search'] {
 	line-height: 2.5rem; /* 142.857% */
 	letter-spacing: -0.09px;
 	max-width: 100%;
-}
+} */
 
 input[type='checkbox']:not([switch]),
 input[type='radio'],

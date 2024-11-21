@@ -29,6 +29,17 @@
 	<button type="submit">Add to database</button>
 </form>
 
-<h2>Step 3: Compare vector</h2>
+<h2>Step 2 bis: Import a database of movies</h2>
+
+<form action="?/importMovies" method="POST">
+	<button type="submit">Import all movies</button>
+</form>
+
+<h2>Step 3: Compare vector (Search)</h2>
+
+<form action="?/search" method="POST">
+	<input type="search" name="needle" id="needle" placeholder="What are you looking for?" />
+	<button type="submit">Search</button>
+</form>
 
 <h2>Step 4: Generate prompt</h2>
