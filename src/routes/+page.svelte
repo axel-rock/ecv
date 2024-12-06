@@ -22,7 +22,7 @@
 <p>Reranking</p>
 <p>Reasoning</p>
 <p>Fine tuning</p>
-<p>Multimodal</p>
+<a href="/multimodal">Multimodal</a>
 <p>L'IA locale</p>
 <p>Images</p>
 <p>Autres trucs cools que je ne savais pas ou ranger</p>

@@ -31,6 +31,7 @@
 	"dependencies": {
 		"@ai-sdk/groq": "^1.0.6",
 		"ai": "^4.0.12",
+		"marked": "^15.0.3",
 		"openai": "^4.73.0",
 		"zod": "^3.23.8"
 	}
