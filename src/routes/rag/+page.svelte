@@ -47,3 +47,31 @@
 {/if}
 
 <h2>Step 4: Generate prompt</h2>
+
+<form action="?/ask" method="POST">
+	<input type="search" name="question" id="question" placeholder="Ask me anything" />
+	<button type="submit">Search</button>
+</form>
+
+<h3>Answer</h3>
+
+{#if form?.prompt}
+	<details>
+		<summary>Prompt</summary>
+		<pre>
+{form.prompt}
+	</pre>
+	</details>
+{/if}
+
+{#if form?.answer}
+	<p><b>{@html form.answer}</b></p>
+{/if}
+
+{#if form?.search_results}
+	<div class="results">
+		{#each form.search_results as result}
+			<Movie {...result} />
+		{/each}
+	</div>
+{/if}

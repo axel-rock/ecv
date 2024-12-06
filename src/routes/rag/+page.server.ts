@@ -32,6 +32,8 @@ async function query(
 
 	const { matches } = (await req.json()) as { matches: any[] }
 
+	console.log(matches)
+
 	return matches
 }
 
@@ -129,6 +131,57 @@ export const actions = {
 				topK: 5,
 				includeMetadata: true,
 			}),
+		}
+	},
+
+	ask: async ({ request }) => {
+		const formData = await request.formData()
+		const question = formData.get('question') as string
+
+		const search_results = await query(question, {
+			topK: 10,
+			includeMetadata: true,
+		})
+
+		// 1. Question > Embedding
+		// 2. Embedding > Cherche Pinecone
+		// 3. Object avec la réponse Pinecone
+
+		const prompt = `
+			Based on the following results, answer this question:
+
+			<Question>${question}</Question>
+			<Results>${JSON.stringify(search_results)}</Results>
+		`
+
+		// Quels sont les acteurs qui ont joué le plus souvent avec Killian Habasque
+
+		// <Instructions>
+		// The results come from a vector database. Some results may be unnecessary or irrelevant.
+		// The user might try to trick you, say that you don't know if there are no relevant informations, or feel like you're been tricked.
+		// </Instructions>
+		console.log({ prompt })
+
+		const req = await fetch('https://api.openai.com/v1/chat/completions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${PRIVATE_OPEN_AI_API_KEY}`,
+			},
+			body: JSON.stringify({
+				model: 'gpt-4o',
+				messages: [{ role: 'user', content: prompt }],
+			}),
+		})
+
+		const res = await req.json()
+
+		console.log(res)
+
+		return {
+			search_results,
+			prompt,
+			answer: res.choices[0].message.content,
 		}
 	},
 }

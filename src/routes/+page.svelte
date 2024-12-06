@@ -17,7 +17,8 @@
 <h2>Techniques avancées:</h2>
 <a href="/rag">RAG</a>
 <p>Agents</p>
-<p>Tools & Functions</p>
+<a href="/objects">Objects</a>
+<a href="/tools">Tools & Functions</a>
 <p>Reranking</p>
 <p>Reasoning</p>
 <p>Fine tuning</p>
