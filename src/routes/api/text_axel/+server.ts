@@ -8,6 +8,6 @@ export const GET: RequestHandler = async () => {
 
 export const POST: RequestHandler = async ({ request }) => {
 	const { message, from } = await request.json()
-	await sendMessage(undefined, `Message from ${from}: ${message}`)
-	return text('success')
+	// await sendMessage(undefined, `Message from ${from}: ${message}`)
+	return text('Endpoint deactivated')
 }

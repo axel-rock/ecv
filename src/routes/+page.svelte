@@ -25,7 +25,7 @@
 <a href="/multimodal">Multimodal</a>
 <p>L'IA locale</p>
 <p>Images</p>
-<p>Autres trucs cools que je ne savais pas ou ranger</p>
+<a href="/cool-stuff">Autres trucs cools que je ne savais pas ou ranger</a>
 
 <hr />
 
